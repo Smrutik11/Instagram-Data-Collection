@@ -8,7 +8,7 @@ from datetime import datetime
 username = 'instagram_username'
 password = 'username_password'
 
-# Connect to MySQL database
+# Connect to the MySQL database
 db_connection = mysql.connector.connect(
     host="localhost",
     user="mySQL_username",
@@ -20,13 +20,13 @@ db_connection = mysql.connector.connect(
 cursor = db_connection.cursor()
 
 try:
-    # Initialize Instagram API client
+    # Initialize the Instagram API client 
     api = Client(username, password)
     results = api.feed_timeline()
 
-    # Iterate through results
+    # Iterate through the results
     for item in results.get('feed_items', []):
-        # Check if item is a valid post
+        # Check if the item is a valid post
         if isinstance(item, dict) and item.get('media_or_ad'):
             post = item.get('media_or_ad')
             post_id = post.get('id')
@@ -44,7 +44,7 @@ try:
             likes = post.get('like_count', 0)
             shares = post.get('comment_count', 0)
 
-            # Insert data into MySQL table using INSERT IGNORE
+            # Insert data into the MySQL table with INSERT IGNORE
             insert_query = "INSERT IGNORE INTO instagram_posts (post_id, user_id, timestamp, content, likes, shares) " \
                            "VALUES (%s, %s, %s, %s, %s, %s)"
             insert_values = (post_id, user_id, timestamp_str, content, likes, shares)
@@ -52,7 +52,7 @@ try:
             db_connection.commit()
 
         else:
-            # Ignore non-post items
+            # Ignore entries that have not been posted
             print(f"Ignoring non-post item: {item}")
 
 except Exception as e:
